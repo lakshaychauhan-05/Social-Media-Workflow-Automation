@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>⚡ Social Media Workflow</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f4f4f9; }
+    h2 { color: #333; }
+    button { padding: 10px 20px; background: #4CAF50; color: #fff; border: none; cursor: pointer; margin: 10px 0; }
+    #log { margin-top: 20px; background: #fff; padding: 15px; border-radius: 8px; height: 200px; overflow-y: auto; border: 1px solid #ccc; }
+    .success { color: green; }
+    .error { color: red; }
+  </style>
+</head>
+<body>
+  <h2>⚡ Social Media Workflow</h2>
+  <button onclick="triggerWorkflow()">🚀 Run Workflow</button>
+  <div id="log"></div>
+
+  <script>
+    async function triggerWorkflow() {
+      document.getElementById("log").innerHTML += "<p>🚀 Workflow started...</p>";
+      const res = await fetch("/run-workflow", { method: "POST" });
+      const data = await res.json();
+      data.logs.forEach(log => {
+        document.getElementById("log").innerHTML += `<p class="${log.type}">${log.message}</p>`;
+      });
+    }
+  </script>
+</body>
+</html>

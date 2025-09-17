@@ -1,0 +1,19 @@
+{
+  "name": "social-media-workflow",
+  "version": "1.0.0",
+  "description": "Social Media Workflow Automation with Slack & Email notifications",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "@slack/web-api": "^7.10.0",
+    "body-parser": "^2.2.0",
+    "dotenv": "^16.6.1",
+    "express": "^4.21.2",
+    "googleapis": "^160.0.0",
+    "node-fetch": "^3.3.2",
+    "nodemailer": "^6.9.3"
+  }
+}
