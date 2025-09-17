@@ -1,11 +1,30 @@
-# create .gitignore
-cat > .gitignore << 'EOF'
+# Node modules
 node_modules/
+
+# Environment files
 .env
 .env.local
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# OS files
 .DS_Store
-npm-debug.log
+Thumbs.db
+
+# Build outputs
 dist/
-coverage/
+build/
+
+# Sensitive credentials
+credentials.json
+
+# IDE settings
 .vscode/
-EOF
+.idea/
+
+# Other
+*.swp
