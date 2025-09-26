@@ -4,7 +4,7 @@ import { google } from "googleapis";
 const sheets = google.sheets("v4");
 
 const auth = new google.auth.GoogleAuth({
-  keyFile: "credentials.json", // Google service account key
+  keyFile: "credentials.json", // Google service account key (create and place this file)
   scopes: ["https://www.googleapis.com/auth/spreadsheets"],
 });
 
@@ -15,7 +15,7 @@ export async function readSheetData(spreadsheetId, range) {
     spreadsheetId,
     range,
   });
-  return res.data.values;
+  return res.data.values || [];
 }
 
 export async function updateSheetStatus(spreadsheetId, row, status) {

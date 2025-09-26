@@ -4,14 +4,8 @@ dotenv.config();
 import { readSheetData, updateSheetStatus } from "./test-sheets.js";
 import cron from "node-cron";
 import nodemailer from "nodemailer";
-// import axios from "axios";   // Slack ke liye tha, ab comment kar diya
-
-// import OpenAI from "openai"; // abhi image/text OpenAI se use nahi kar rahe
-// const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-
-const SPREADSHEET_ID = "1ccgIt_mxC66VjpftUT94o8IL5if8Pmr5Rwtax7AM7yA";
-const RANGE = "Campaigns!A2:D"; // header skipped
-// const SLACK_WEBHOOK_URL = process.env.SLACK_WEBHOOK_URL; // ab use nahi hoga
+import OpenAI from "openai";
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 // Gmail setup
 const transporter = nodemailer.createTransport({
@@ -23,14 +17,19 @@ const transporter = nodemailer.createTransport({
 });
 
 async function generatePostText(title, topic) {
-  // Mock text generation
-  return `This is a post about "${title}" on topic "${topic}"`;
+  try {
+    const response = await openai.chat.completions.create({
+      model: "gpt-3.5-turbo",
+      messages: [
+        { role: "user", content: `Write a short, engaging social media post for the campaign titled "${title}" about "${topic}".` }
+      ],
+    });
+    return response.choices[0].message.content;
+  } catch (error) {
+    console.error("OpenAI API error:", error);
+    throw error;
+  }
 }
-
-// Slack ko hata diya
-// async function sendSlackNotification(message) {
-//   await axios.post(SLACK_WEBHOOK_URL, { text: message });
-// }
 
 async function sendFailureEmail(title, error) {
   await transporter.sendMail({
@@ -48,8 +47,7 @@ async function postToPlatform(platform, title) {
 }
 
 async function main() {
-  console.log("Fetching campaigns from Google Sheets...");
-  let campaigns = await readSheetData(SPREADSHEET_ID, RANGE);
+  let campaigns = await readSheetData(process.env.SPREADSHEET_ID, process.env.RANGE);
 
   let finalStatus = "";
 
@@ -68,7 +66,7 @@ async function main() {
         await postToPlatform(platform, title);
       }
 
-      await updateSheetStatus(SPREADSHEET_ID, i + 1, "Posted");
+      await updateSheetStatus(process.env.SPREADSHEET_ID, i + 1, "Posted");
       finalStatus += `${title}: Posted\n`;
     } catch (err) {
       await sendFailureEmail(title, err);
@@ -76,14 +74,10 @@ async function main() {
     }
   }
 
-  // Slack ko sirf console log me replace kiya
   console.log("\n[Slack Notification - Disabled]");
   console.log(finalStatus);
   console.log("\n✅ Console notification printed\nAll posts processed!");
 }
 
-// Optional: run every day at 9AM
-cron.schedule("0 9 * * *", main);
-
-// Run immediately
+cron.schedule("0 9 * * *", main); // Run every day at 9AM
 main();

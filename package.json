@@ -5,7 +5,12 @@
   "type": "module",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "tunnel": "lt --port 3000 --subdomain myworkflow",
+    "workflow": "curl -X POST http://localhost:3000/run-workflow",
+    "dev": "concurrently \"npm run start\" \"npm run tunnel\"",
+    "run-all": "concurrently \"npm run start\" \"npm run tunnel\" \"sleep 5 && npm run workflow\""
+
   },
   "dependencies": {
     "@slack/web-api": "^7.10.0",
@@ -13,7 +18,13 @@
     "dotenv": "^16.6.1",
     "express": "^4.21.2",
     "googleapis": "^160.0.0",
+    "node-cron": "^4.2.1",
     "node-fetch": "^3.3.2",
-    "nodemailer": "^6.9.3"
+    "nodemailer": "^6.10.1",
+    "openai": "^5.23.0",
+    "uuid": "^13.0.0"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
   }
 }
