@@ -10,7 +10,6 @@
     "workflow": "curl -X POST http://localhost:3000/run-workflow",
     "dev": "concurrently \"npm run start\" \"npm run tunnel\"",
     "run-all": "concurrently \"npm run start\" \"npm run tunnel\" \"sleep 5 && npm run workflow\""
-
   },
   "dependencies": {
     "@slack/web-api": "^7.10.0",
